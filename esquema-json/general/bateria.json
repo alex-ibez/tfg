@@ -7,7 +7,7 @@
   },
   "capacitat_actual_kwh": {
     "type": "Float",
-    "value": 32.042
+    "value": 32.061
   },
   "prediccio_bateria": {
     "type": "Float",

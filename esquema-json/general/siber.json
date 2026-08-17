@@ -3,7 +3,7 @@
   "type": "VentilacioHRV",
   "actiu": {
     "type": "Boolean",
-    "value": false
+    "value": true
   },
   "mode": {
     "type": "Text",
@@ -11,10 +11,10 @@
   },
   "temp_siber_c": {
     "type": "Float",
-    "value": 24.4
+    "value": 25.5
   },
   "co2_ppm": {
     "type": "Integer",
-    "value": 529
+    "value": 683
   }
 }
