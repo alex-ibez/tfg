@@ -1,0 +1,12 @@
+{
+  "id": "Llum:Veinat:Habitacio1",
+  "type": "Llum",
+  "estanca": {
+    "type": "Text",
+    "value": "Habitacio1"
+  },
+  "encesa": {
+    "type": "Boolean",
+    "value": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "SensorAmbient:Veinat:Cuina",
+  "type": "SensorAmbient",
+  "estanca": {
+    "type": "Text",
+    "value": "Cuina"
+  },
+  "temperatura_c": {
+    "type": "Float",
+    "value": 22.5
+  },
+  "humitat_pct": {
+    "type": "Float",
+    "value": 37.0
+  },
+  "ocupacio": {
+    "type": "Boolean",
+    "value": false
+  }
+}

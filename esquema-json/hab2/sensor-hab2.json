@@ -1,0 +1,20 @@
+{
+  "id": "SensorAmbient:Veinat:Habitacio2",
+  "type": "SensorAmbient",
+  "estanca": {
+    "type": "Text",
+    "value": "Habitacio2"
+  },
+  "temperatura_c": {
+    "type": "Float",
+    "value": 22.6
+  },
+  "humitat_pct": {
+    "type": "Float",
+    "value": 57.8
+  },
+  "ocupacio": {
+    "type": "Boolean",
+    "value": false
+  }
+}

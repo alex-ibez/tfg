@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Veïnat | Dashboard IoT</title>
+    <link rel="icon" type="image/x-icon" href="public/icona.png">
+
+    <script src="js/tailwindcss.js"></script>
+    <script src="js/chart.js"></script>
+    
+    <link rel="stylesheet" href="estilos.css">
+    
+    <style>
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-6">
+
+    <header class="max-w-7xl mx-auto mb-5 flex justify-between items-center">
+        <div>
+            <div class="text-[10px] text-slate-600 mono uppercase tracking-widest mb-1">Veïnat · Azalea UPV</div>
+            <div id="live-clock" class="mono text-2xl text-slate-300 font-light tracking-tight">00:00:00</div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto space-y-4">
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+            <div class="card flex flex-col">
+                <div class="room-header">
+                    <span class="font-semibold text-sm"><i class="fas fa-tint mr-2 text-blue-500"></i>Gestió d'Aigua</span>
+                    <span id="water-estat" class="mono text-xs text-slate-600">—</span>
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm text-slate-400">Bomba pressió</span>
+                        <img id="pump-img" src="public/bomba_inactiva.png" class="h-8 w-8 rounded-lg object-contain">
+                    </div>
+                    <div class="text-center mt-auto">
+                        <span id="water-now" class="mono text-3xl font-light text-blue-400">—</span>
+                        <span class="mono text-lg text-blue-400">%</span>
+                        <p class="text-[9px] uppercase tracking-widest text-slate-600 mt-1">Estat del Dipòsit</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card flex flex-col">
+                <div class="card-header flex justify-between items-center pr-4 pt-4">
+                    <span><i class="fas fa-water mr-1 text-blue-700"></i>Nivell Dipòsit</span>
+                </div>
+                <div style="height:80px; padding:8px 16px 6px;">
+                    <canvas id="waterChart"></canvas>
+                </div>
+                <div class="grid grid-cols-1 border-t border-[#1a2236]">
+                    <div class="p-3 text-center">
+                        <div class="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-1">Volum</div>
+                        <div id="water-vol" class="mono text-xs text-blue-300">— L</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card md:col-span-2">
+                <div class="card-header flex justify-between items-center pr-4 pt-4">
+                    <span>Autonomia Bateria</span>
+                    <span id="battery-now" class="mono text-emerald-400 text-base font-medium">— %</span>
+                </div>
+                <div style="height:80px; padding:8px 16px 6px;">
+                    <canvas id="batteryChart"></canvas>
+                </div>
+                <div class="grid grid-cols-3 border-t border-[#1a2236] divide-x divide-[#1a2236]">
+                    <div class="p-3 text-center">
+                        <div class="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-1">Estat</div>
+                        <div id="bat-estat" class="mono text-sm text-slate-400">—</div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <div class="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-1">Potència d'entrada</div>
+                        <div id="bat-balanc" class="mono text-sm">— kW</div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <div class="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-1">Autonomia</div>
+                        <div id="bat-autonomia" class="mono text-sm text-sky-400">— h</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+            <div class="card flex flex-col overflow-hidden">
+                <div class="room-header flex-shrink-0">
+                    <span class="font-semibold text-sm">Registre d'events</span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <div id="event-log" class="p-4 overflow-y-auto mono text-[10px] space-y-2 scrollbar-hide" style="max-height:215px;"></div>
+            </div>
+
+            <div class="card md:col-span-2">
+                <div class="card-header flex justify-between items-center pr-4 pt-4">
+                    <span>Historial Potència al Temps</span>
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1 text-[10px] text-slate-500"><span class="dot dot-amber"></span>Consum</span>
+                        <span class="flex items-center gap-1 text-[10px] text-slate-500"><span class="dot dot-green"></span>Producció</span>
+                    </div>
+                </div>
+                <div style="height:150px; padding:10px 16px 14px;">
+                    <canvas id="historialChart"></canvas>
+                </div>
+                <div class="grid grid-cols-3 border-t border-[#1a2236] divide-x divide-[#1a2236]">
+                    <div class="p-3 text-center">
+                        <div class="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-1">Consum</div>
+                        <div class="mono text-sm text-amber-400" id="cons-val">— kW</div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <div class="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-1">Producció</div>
+                        <div class="mono text-sm text-emerald-400" id="prod-val">— kW</div>
+                    </div>
+                    <div class="p-3 text-center">
+                        <div class="text-[10px] uppercase tracking-widest text-slate-600 font-bold mb-1">Balanç net</div>
+                        <div class="mono text-sm" id="balanc-val">— kW</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="card flex-1">
+                    <div class="card-header flex justify-between items-center pr-4 pt-4">
+                        <span><i class="fas fa-thermometer-half mr-1 text-sky-700"></i>Temperatura Ext.</span>
+                        <span id="temp-val" class="mono text-red-400 text-base font-medium">— °C</span>
+                    </div>
+                    <div style="height:90px; padding:8px 14px 12px;">
+                        <canvas id="tempChart"></canvas>
+                    </div>
+                </div>
+                <div class="card flex-1">
+                    <div class="card-header flex justify-between items-center pr-4 pt-4">
+                        <span><i class="fas fa-cloud mr-1 text-cyan-700"></i>Humitat Ext.</span>
+                        <span id="hum-val" class="mono text-cyan-400 text-base font-medium">— %</span>
+                    </div>
+                    <div style="height:90px; padding:8px 14px 12px;">
+                        <canvas id="humChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            
+            <div class="card flex flex-col self-start">
+                <div class="room-header">
+                    <span class="font-semibold text-sm"><i class="fas fa-snowflake mr-2 text-sky-600"></i>Clima General</span>
+                    <span id="ac-estat" class="mono text-xs text-slate-600">—</span>
+                </div>
+                <div class="p-4 flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm text-slate-400">Sistema</span>
+                        <img id="siber-img" src="public/siber_off.png" class="h-8 w-8 rounded-lg object-contain">
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm text-slate-400">Mode</span>
+                        <span id="ac-mode-text" class="mono text-xs text-slate-300">—</span>
+                    </div>
+                    <div class="temp-stepper mt-auto justify-center">
+                        <div class="text-center">
+                            <span id="target-ac" class="mono text-2xl font-light text-slate-200">—</span>
+                            <p class="text-[9px] uppercase tracking-widest text-slate-600 mt-0.5">Temperatura</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rooms-container" class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="eljava.js"></script>
+</body>
+</html>

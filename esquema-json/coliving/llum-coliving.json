@@ -1,0 +1,12 @@
+{
+  "id": "Llum:Veinat:Coliving",
+  "type": "Llum",
+  "estanca": {
+    "type": "Text",
+    "value": "Coliving"
+  },
+  "encesa": {
+    "type": "Boolean",
+    "value": false
+  }
+}

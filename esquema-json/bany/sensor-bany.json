@@ -1,0 +1,20 @@
+{
+  "id": "SensorAmbient:Veinat:Bany",
+  "type": "SensorAmbient",
+  "estanca": {
+    "type": "Text",
+    "value": "Bany"
+  },
+  "temperatura_c": {
+    "type": "Float",
+    "value": 24.8
+  },
+  "humitat_": {
+    "type": "Float",
+    "value": 60.6
+  },
+  "ocupacio": {
+    "type": "Boolean",
+    "value": false
+  }
+}

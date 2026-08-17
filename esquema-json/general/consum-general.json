@@ -1,0 +1,16 @@
+{
+  "id": "Consum:Veinat:001",
+  "type": "ConsumGeneral",
+  "potencia_total_w": {
+    "type": "Float",
+    "value": 52.0
+  },
+  "mode_estalvi": {
+    "type": "Boolean",
+    "value": false
+  },
+  "alerta_bateria": {
+    "type": "Boolean",
+    "value": false
+  }
+}

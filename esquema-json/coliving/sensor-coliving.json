@@ -1,0 +1,20 @@
+{
+  "id": "SensorAmbient:Veinat:Coliving",
+  "type": "SensorAmbient",
+  "estanca": {
+    "type": "Text",
+    "value": "Coliving"
+  },
+  "temperatura_c": {
+    "type": "Float",
+    "value": 24.5
+  },
+  "humitat_pct": {
+    "type": "Float",
+    "value": 62.4
+  },
+  "ocupacio": {
+    "type": "Boolean",
+    "value": true
+  }
+}

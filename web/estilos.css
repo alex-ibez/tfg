@@ -1,0 +1,138 @@
+/* =====================
+   Veïnat Dashboard CSS
+   ===================== */
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Syne', sans-serif;
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* --- Cards --- */
+.card {
+    background: #ffffff;
+    border: 1px solid #dbe3ee;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.card-header {
+    padding: 14px 18px 0;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 1rem;
+}
+
+/* --- Room header --- */
+.room-header {
+    background: #f8fafc;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* --- Switch toggle --- */
+.switch {
+    appearance: none;
+    width: 36px;
+    height: 19px;
+    background: #cbd5e1;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 1px solid #94a3b8;
+    flex-shrink: 0;
+}
+.switch:checked { background: #3b6fd4; border-color: #4d82e8; }
+.switch::before {
+    content: '';
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    background: #ffffff;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+}
+.switch:checked::before { transform: translateX(17px); background: #fff; }
+
+/* --- Temperature stepper --- */
+.temp-stepper {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.stepper-btn {
+    width: 32px;
+    height: 32px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 300;
+    color: #7eb3ff;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+}
+.stepper-btn:hover { background: #cbd5e1; }
+
+/* --- Status dots --- */
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.dot-amber { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; }
+
+/* --- AC mode select --- */
+select {
+    outline: none;
+}
+select:focus { border-color: #3b6fd4; }
+
+/* --- Scrollbar --- */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* --- Adaptació de les classes Tailwind del disseny fosc --- */
+.text-slate-200,
+.text-slate-300 { color: #334155 !important; }
+.text-slate-400 { color: #475569 !important; }
+.text-slate-500,
+.text-slate-600 { color: #64748b !important; }
+.text-blue-900 { color: #1d4ed8 !important; }
+.border-slate-800 { border-color: #cbd5e1 !important; }
+
+.card .border-t,
+.card [class*="border-[#1a2236]"] {
+    border-color: #e2e8f0 !important;
+}
+
+.card .divide-x > :not([hidden]) ~ :not([hidden]) {
+    border-color: #e2e8f0 !important;
+}

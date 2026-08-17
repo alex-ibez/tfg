@@ -1,0 +1,16 @@
+{
+  "id": "Bateria:Veinat:001",
+  "type": "Bateria",
+  "capacitat_maxima_kwh": {
+    "type": "Float",
+    "value": 62.0
+  },
+  "capacitat_actual_kwh": {
+    "type": "Float",
+    "value": 32.034
+  },
+  "prediccio_bateria": {
+    "type": "Float",
+    "value": 2.0
+  }
+}

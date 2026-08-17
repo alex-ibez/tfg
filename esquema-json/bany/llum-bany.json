@@ -1,0 +1,16 @@
+{
+  "id": "Llum:Veinat:Bany",
+  "type": "Llum",
+  "estanca": {
+    "type": "Text",
+    "value": "Bany"
+  },
+  "encesa": {
+    "type": "Boolean",
+    "value": false
+  },
+  "consum_w": {
+    "type": "Float",
+    "value": 0.0
+  }
+}

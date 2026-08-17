@@ -1,0 +1,408 @@
+{
+  "info": {
+    "_postman_id": "2a334774-ea4c-40e9-8e02-af6ef45bcae6",
+    "name": "Proves de funcionament",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53605328",
+    "_collection_link": "https://go.postman.co/collection/53605328-2a334774-ea4c-40e9-8e02-af6ef45bcae6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Eliminar total",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actionType\": \"delete\",\n  \"entities\": [\n    { \"id\": \"Bateria:Veinat:001\" },\n    { \"id\": \"Siber:Veinat:001\" },\n    { \"id\": \"Deposito:Veinat:001\" },\n    { \"id\": \"Consum:Veinat:001\" },\n    { \"id\": \"SolarPanel:Veinat:001\" },\n    { \"id\": \"Estanca:Veinat:Sala\" },\n    { \"id\": \"Estanca:Veinat:Cuina\" },\n    { \"id\": \"Estanca:Veinat:Bany\" },\n    { \"id\": \"Estanca:Veinat:Habitacio1\" },\n    { \"id\": \"Estanca:Veinat:Habitacio2\" }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/op/update",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "op",
+            "update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Potència a zero",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"potencia_w\": { \"type\": \"Float\", \"value\": 0.0 }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/entities/SolarPanel:Veinat:001/attrs",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "entities",
+            "SolarPanel:Veinat:001",
+            "attrs"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Dipòsit complet",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nivell_litres\": { \"type\": \"Float\", \"value\": 300.0 },\n  \"valvula_mode\": { \"type\": \"Text\", \"value\": \"obert\" }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/entities/Deposit:Veinat:001/attrs",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "entities",
+            "Deposit:Veinat:001",
+            "attrs"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Dipòsit buit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nivell_litres\": { \"type\": \"Float\", \"value\": 0.0 },\n  \"valvula_mode\": { \"type\": \"Text\", \"value\": \"obert\" }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/entities/Deposit:Veinat:001/attrs",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "entities",
+            "Deposit:Veinat:001",
+            "attrs"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Alt co2",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"co2_ppm\": { \"type\": \"Integer\", \"value\": 1200 },\n  \"actiu\": { \"type\": \"Boolean\", \"value\": true }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/entities/Siber:Veinat:001/attrs",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "entities",
+            "Siber:Veinat:001",
+            "attrs"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Alta temperatura Siber",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"temp_siber_c\": { \"type\": \"Float\", \"value\": 32.5 }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/entities/Siber:Veinat:001/attrs",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "entities",
+            "Siber:Veinat:001",
+            "attrs"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Bateria casi buida",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"capacitat_actual_kwh\": { \"type\": \"Float\", \"value\": 0.3 }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/entities/Bateria:Veinat:001/attrs",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "entities",
+            "Bateria:Veinat:001",
+            "attrs"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Hab2 de nit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actionType\": \"append\",\n  \"entities\": [\n    {\n      \"id\": \"Llum:Veinat:Habitacio2\",\n      \"type\": \"Llum\",\n      \"encesa\": {\n        \"type\": \"Boolean\",\n        \"value\": false\n      }\n    },\n    {\n      \"id\": \"SensorAmbient:Veinat:Habitacio2\",\n      \"type\": \"SensorAmbient\",\n      \"ocupacio\": {\n        \"type\": \"Boolean\",\n        \"value\": true\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/op/update",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "op",
+            "update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Dutxa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actionType\": \"append\",\n  \"entities\": [\n    {\n      \"id\": \"Llum:Veinat:Dutxa\",\n      \"type\": \"Llum\",\n      \"encesa\": {\n        \"type\": \"Boolean\",\n        \"value\": true\n      }\n    },\n    {\n      \"id\": \"SensorAmbient:Veinat:Dutxa\",\n      \"type\": \"SensorAmbient\",\n      \"ocupacio\": {\n        \"type\": \"Boolean\",\n        \"value\": true\n      },\n      \"humitat_\":{\n        \"type\":\"Float\",\n        \"value\":85.2\n      },\n      \"temperatura_c\":{\n        \"type\":\"Float\",\n        \"value\":28.6\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/op/update",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "op",
+            "update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cuinant",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actionType\": \"append\",\n  \"entities\": [\n    {\n      \"id\": \"Llum:Veinat:Cuina\",\n      \"type\": \"Llum\",\n      \"encesa\": {\n        \"type\": \"Boolean\",\n        \"value\": true\n      }\n    },\n    {\n      \"id\": \"SensorAmbient:Veinat:Cuina\",\n      \"type\": \"SensorAmbient\",\n      \"ocupacio\": {\n        \"type\": \"Boolean\",\n        \"value\": true\n      },\n      \"humitat_pct\":{\n        \"type\":\"Float\",\n        \"value\":82.1\n      },\n      \"temperatura_c\":{\n        \"type\":\"Float\",\n        \"value\":27.2\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://100.97.229.121:1026/v2/op/update",
+          "protocol": "http",
+          "host": [
+            "100",
+            "97",
+            "229",
+            "121"
+          ],
+          "port": "1026",
+          "path": [
+            "v2",
+            "op",
+            "update"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "Llum:Veinat:Dutxa",
+  "type": "Llum",
+  "estanca": {
+    "type": "Text",
+    "value": "Dutxa"
+  },
+  "encesa": {
+    "type": "Boolean",
+    "value": false
+  },
+  "consum_w": {
+    "type": "Float",
+    "value": 0.0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "Siber:Veinat:001",
+  "type": "VentilacioHRV",
+  "actiu": {
+    "type": "Boolean",
+    "value": true
+  },
+  "mode": {
+    "type": "Text",
+    "value": "auto"
+  },
+  "temp_siber_c": {
+    "type": "Float",
+    "value": 21.3
+  },
+  "co2_ppm": {
+    "type": "Integer",
+    "value": 804
+  }
+}

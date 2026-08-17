@@ -1,0 +1,20 @@
+{
+  "id": "Deposit:Veinat:001",
+  "type": "DepositAigua",
+  "nivell_litres": {
+    "type": "Float",
+    "value": 262.3
+  },
+  "volum_max_litres": {
+    "type": "Float",
+    "value": 300.0
+  },
+  "bomba_activa": {
+    "type": "Boolean",
+    "value": false
+  },
+  "prediccio_aigua": {
+    "type": "Float",
+    "value": 31.8
+  }
+}

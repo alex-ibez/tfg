@@ -1,0 +1,244 @@
+{
+  "name": "Històric i predicció",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "dc28b6ff-c670-4df4-b8d7-358d15e3cec0",
+      "name": "Cada 5 min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://orion:1026/v2/entities",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "limit",
+              "value": "1000"
+            },
+            {
+              "name": "options",
+              "value": "keyValues"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "03998b9f-aa08-4245-9817-4ff08736a8de",
+      "name": "Llegir Orion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aplana la foto d'Orion a files clau-valor per a la taula historic.\n// (Unic tros de codi: convertir cada entitat en una fila per atribut.)\nconst ts = new Date().toISOString().slice(0, 19).replace('T', ' ');\nconst files = [];\n\nfor (const item of $input.all()) {\n  const e = item.json;\n  if (!e || !e.id) continue;\n  if (e.type === 'Event') continue; // el registre d'events no va a l'historic\n\n  for (const [atribut, valor] of Object.entries(e)) {\n    if (atribut === 'id' || atribut === 'type') continue;\n\n    let valor_num = null;\n    let valor_text = null;\n    if (typeof valor === 'number') valor_num = valor;\n    else if (typeof valor === 'boolean') valor_num = valor ? 1 : 0;\n    else if (valor === null || valor === undefined) valor_text = null;\n    else if (typeof valor === 'object') valor_text = JSON.stringify(valor).slice(0, 255);\n    else valor_text = String(valor).slice(0, 255);\n\n    files.push({\n      json: {\n        ts,\n        entitat: e.id,\n        tipus: e.type || null,\n        atribut,\n        valor_num,\n        valor_text,\n      },\n    });\n  }\n}\n\nreturn files;"
+      },
+      "id": "13de9f36-1ab4-4d82-a9e6-431587f4d2c3",
+      "name": "Aplanar a files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "mode": "name",
+          "value": "historic"
+        },
+        "options": {}
+      },
+      "id": "95bfb8f3-fa58-47f1-881b-c98282063b4b",
+      "name": "Desar a MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        672,
+        0
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ig4qOxuKmlO1ImRS",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT ts, valor_num FROM historic WHERE entitat = 'Bateria:Veinat:001' AND atribut = 'capacitat_actual_kwh' AND ts >= NOW() - INTERVAL 2 HOUR AND valor_num IS NOT NULL ORDER BY ts ASC",
+        "options": {}
+      },
+      "id": "3f5dfdae-c961-43ba-bb7b-e91e5082e20b",
+      "name": "Llegir històric bateria",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1120,
+        0
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "ig4qOxuKmlO1ImRS",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Regressió lineal simple (temps en segons -> capacitat_actual_kwh)\n// per a estimar les hores restants fins que la bateria s'exhaureix.\n// (Únic tros de codi: mateixa fórmula que prediccio_autonomia.py.)\nconst files = $input.all().map(item => item.json);\n\nif (files.length < 3) {\n  return [];\n}\n\nconst t0 = new Date(files[0].ts).getTime();\nconst xs = files.map(f => (new Date(f.ts).getTime() - t0) / 1000);\nconst ys = files.map(f => f.valor_num);\nconst n = xs.length;\n\nconst mitjanaX = xs.reduce((a, b) => a + b, 0) / n;\nconst mitjanaY = ys.reduce((a, b) => a + b, 0) / n;\nconst numerador = xs.reduce((suma, x, i) => suma + (x - mitjanaX) * (ys[i] - mitjanaY), 0);\nconst denominador = xs.reduce((suma, x) => suma + (x - mitjanaX) ** 2, 0);\nconst pendent = denominador === 0 ? 0 : numerador / denominador;\n\n// Si la tendència no és decreixent (es carrega), no hi ha exhauriment previst.\nif (pendent >= 0) {\n  return [{ json: { valor: null } }];\n}\n\nconst valorActual = ys[ys.length - 1];\nconst hores = (valorActual / -pendent) / 3600;\n\nreturn [{ json: { valor: Math.round(hores * 100) / 100 } }];"
+      },
+      "id": "86c4fe4e-b11a-4756-bfcd-57f557aac477",
+      "name": "Calcular predicció",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://orion:1026/v2/entities/Bateria:Veinat:001/attrs",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { prediccio_bateria: { type: \"Float\", value: $json.valor } } }}",
+        "options": {}
+      },
+      "id": "2b1ff14b-ad96-483f-bd26-d5c04ff87e8e",
+      "name": "Enviar a Orion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1568,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        0
+      ],
+      "id": "84f6b6aa-d7ba-4e05-8e42-82d3301d6921",
+      "name": "Wait",
+      "webhookId": "8b70bd07-d553-4bef-8ec0-7322c59d4d59"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cada 5 min": {
+      "main": [
+        [
+          {
+            "node": "Llegir Orion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Llegir Orion": {
+      "main": [
+        [
+          {
+            "node": "Aplanar a files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aplanar a files": {
+      "main": [
+        [
+          {
+            "node": "Desar a MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Llegir històric bateria": {
+      "main": [
+        [
+          {
+            "node": "Calcular predicció",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular predicció": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Orion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Desar a MySQL": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Llegir històric bateria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "84cd7948-e4bc-4d9b-b99b-31846b9c760c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cfa492ef38f2110b2b99ee1d6840e28ba61ed1e701d87b44025882d0c55b5184"
+  },
+  "id": "y2r7MaOtAa4EUWzN",
+  "tags": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "SensorAmbient:Veinat:Dutxa",
+  "type": "SensorAmbient",
+  "estanca": {
+    "type": "Text",
+    "value": "Dutxa"
+  },
+  "temperatura_c": {
+    "type": "Float",
+    "value": 24.1
+  },
+  "humitat_ptc": {
+    "type": "Float",
+    "value": 49.7
+  },
+  "ocupacio": {
+    "type": "Boolean",
+    "value": true
+  }
+}
