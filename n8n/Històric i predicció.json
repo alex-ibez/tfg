@@ -22,7 +22,7 @@
     },
     {
       "parameters": {
-        "url": "http://orion:1026/v2/entities",
+        "url": "http://100.97.229.121:1026/v2/entities",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -107,7 +107,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Regressió lineal simple (temps en segons -> capacitat_actual_kwh)\n// per a estimar les hores restants fins que la bateria s'exhaureix.\n// (Únic tros de codi: mateixa fórmula que prediccio_autonomia.py.)\nconst files = $input.all().map(item => item.json);\n\nif (files.length < 3) {\n  return [];\n}\n\nconst t0 = new Date(files[0].ts).getTime();\nconst xs = files.map(f => (new Date(f.ts).getTime() - t0) / 1000);\nconst ys = files.map(f => f.valor_num);\nconst n = xs.length;\n\nconst mitjanaX = xs.reduce((a, b) => a + b, 0) / n;\nconst mitjanaY = ys.reduce((a, b) => a + b, 0) / n;\nconst numerador = xs.reduce((suma, x, i) => suma + (x - mitjanaX) * (ys[i] - mitjanaY), 0);\nconst denominador = xs.reduce((suma, x) => suma + (x - mitjanaX) ** 2, 0);\nconst pendent = denominador === 0 ? 0 : numerador / denominador;\n\n// Si la tendència no és decreixent (es carrega), no hi ha exhauriment previst.\nif (pendent >= 0) {\n  return [{ json: { valor: null } }];\n}\n\nconst valorActual = ys[ys.length - 1];\nconst hores = (valorActual / -pendent) / 3600;\n\nreturn [{ json: { valor: Math.round(hores * 100) / 100 } }];"
+        "jsCode": "// Regressió lineal simple (temps en segons -> capacitat_actual_kwh)\n// per a estimar les hores fins que la bateria arribe a un extrem.\nconst CAPACITAT_MAXIMA_KWH = 62.0;\n\nconst files = $input.all().map(item => item.json);\n\nif (files.length < 3) {\n  return [];\n}\n\nconst t0 = new Date(files[0].ts).getTime();\nconst xs = files.map(f => (new Date(f.ts).getTime() - t0) / 1000);\nconst ys = files.map(f => f.valor_num);\nconst n = xs.length;\n\nconst mitjanaX = xs.reduce((a, b) => a + b, 0) / n;\nconst mitjanaY = ys.reduce((a, b) => a + b, 0) / n;\nconst numerador = xs.reduce((suma, x, i) => suma + (x - mitjanaX) * (ys[i] - mitjanaY), 0);\nconst denominador = xs.reduce((suma, x) => suma + (x - mitjanaX) ** 2, 0);\nconst pendent = denominador === 0 ? 0 : numerador / denominador;\n\n// Pendent 0 (plana, sense tendència): no hi ha res a predir.\nif (pendent === 0) {\n  return [{ json: { valor: null } }];\n}\n\nconst valorActual = ys[ys.length - 1];\n// Descarregant -> hores fins buida (0). Carregant -> hores fins plena.\nconst objectiu = pendent < 0 ? 0 : CAPACITAT_MAXIMA_KWH;\nconst hores = Math.abs((objectiu - valorActual) / pendent) / 3600;\n\nreturn [{ json: { valor: Math.round(hores * 100) / 100 } }];"
       },
       "id": "86c4fe4e-b11a-4756-bfcd-57f557aac477",
       "name": "Calcular predicció",
@@ -121,7 +121,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://orion:1026/v2/entities/Bateria:Veinat:001/attrs",
+        "url": "http://100.97.229.121:1026/v2/entities/Bateria:Veinat:001/attrs",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ { prediccio_bateria: { type: \"Float\", value: $json.valor } } }}",
@@ -137,7 +137,11 @@
       ]
     },
     {
-      "parameters": {},
+      "parameters": {
+        "resume": "timeInterval",
+        "unit": "seconds",
+        "amount": 2
+      },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
@@ -234,7 +238,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "84cd7948-e4bc-4d9b-b99b-31846b9c760c",
+  "versionId": "7e1346b8-490e-4acc-bfea-85a69c719e9a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cfa492ef38f2110b2b99ee1d6840e28ba61ed1e701d87b44025882d0c55b5184"

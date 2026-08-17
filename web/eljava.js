@@ -100,11 +100,14 @@ async function updateSensors() {
 
         // LECTURA DE LA BATERIA AMB ELS NOUS ATRIBUTS EN KWH
         const bateria = await getEntity("Bateria:Veinat:001");
+        let prediccioBateria = null;
         if (bateria) {
             const capMax = getAttr(bateria, 'capacitat_maxima_kwh', 62.0);
             const capAct = getAttr(bateria, 'capacitat_actual_kwh', 31.0);
             // Calculem el % en temps real per alimentar el panell visual de la web
             batteryLevel = (capAct / capMax) * 100.0;
+            // La predicció ja ve calculada per n8n; ací només es mostra
+            prediccioBateria = getAttr(bateria, 'prediccio_bateria', null);
         } else {
             batteryLevel = 0.0;
         }
@@ -222,6 +225,8 @@ async function updateSensors() {
         const estatEl = document.getElementById('bat-estat');
         estatEl.textContent = carregant ? '↑ Carregant' : '↓ Descarregant';
         estatEl.className   = 'mono text-sm ' + (carregant ? 'text-emerald-400' : 'text-red-400');
+        document.getElementById('bat-autonomia').textContent =
+            prediccioBateria === null ? '-' : prediccioBateria.toFixed(1) + ' h';
 
         const bal_kw  = (balanc / 1000).toFixed(2);
         const balCls  = 'mono text-sm ' + (balanc > 0 ? 'text-emerald-400' : 'text-red-400');
