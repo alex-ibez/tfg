@@ -7,6 +7,6 @@
   },
   "capacitat_actual_kwh": {
     "type": "Float",
-    "value": 32.305
+    "value": 32.3
   }
 }
