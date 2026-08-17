@@ -7,10 +7,10 @@
   },
   "encesa": {
     "type": "Boolean",
-    "value": true
+    "value": false
   },
   "consum_w": {
     "type": "Float",
-    "value": 26.14
+    "value": 0.0
   }
 }
