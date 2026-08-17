@@ -11,10 +11,10 @@
   },
   "temp_siber_c": {
     "type": "Float",
-    "value": 16.5
+    "value": 12.9
   },
   "co2_ppm": {
     "type": "Integer",
-    "value": 599
+    "value": 779
   }
 }
