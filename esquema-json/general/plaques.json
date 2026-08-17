@@ -3,6 +3,6 @@
   "type": "SolarPanel",
   "potencia_w": {
     "type": "Float",
-    "value": 5635.62
+    "value": 0.0
   }
 }
