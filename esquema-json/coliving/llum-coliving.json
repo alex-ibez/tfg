@@ -7,6 +7,6 @@
   },
   "encesa": {
     "type": "Boolean",
-    "value": false
+    "value": true
   }
 }

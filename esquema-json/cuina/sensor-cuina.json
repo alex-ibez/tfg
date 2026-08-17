@@ -7,11 +7,11 @@
   },
   "temperatura_c": {
     "type": "Float",
-    "value": 29.7
+    "value": 26.7
   },
   "humitat_pct": {
     "type": "Float",
-    "value": 54.3
+    "value": 41.6
   },
   "ocupacio": {
     "type": "Boolean",
