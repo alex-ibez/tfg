@@ -21,6 +21,5 @@ class Bateria:
 
     def valors(self):
         return {
-            "capacitat_maxima_kwh": self.maxima_kwh,
             "capacitat_actual_kwh": round(self.actual_kwh, 3),
         }

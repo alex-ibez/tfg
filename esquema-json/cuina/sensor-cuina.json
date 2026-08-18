@@ -11,7 +11,7 @@
   },
   "humitat_pct": {
     "type": "Float",
-    "value": 43.4
+    "value": 61.7
   },
   "ocupacio": {
     "type": "Boolean",

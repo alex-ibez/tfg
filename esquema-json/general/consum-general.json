@@ -3,7 +3,7 @@
   "type": "ConsumGeneral",
   "potencia_total_w": {
     "type": "Float",
-    "value": 1311.81
+    "value": 2788.0
   },
   "mode_estalvi": {
     "type": "Boolean",

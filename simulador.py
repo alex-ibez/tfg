@@ -25,6 +25,7 @@ CARPETA_ESQUEMES = ARREL / "esquema-json"
 CARPETA_ENERGIA = ARREL / "db" / "generacio"
 CARPETA_CLIMA = ARREL / "db" / "clima"
 SEGONS_ENTRE_CICLES = 5
+ACCELERADOR = 10
 
 
 def arguments():
@@ -76,7 +77,7 @@ def main():
             fila_energia = energia.seguent()
             fila_clima = clima.seguent()
             motor.iniciar_cicle(
-                fila_energia, fila_clima, SEGONS_ENTRE_CICLES
+                fila_energia, fila_clima, SEGONS_ENTRE_CICLES * ACCELERADOR
             )
 
             balanc = fila_energia["produccio_w"] - fila_energia["consum_w"]

@@ -6,18 +6,18 @@
         "rule": {
           "interval": [
             {
-              "field": "minutes"
+              "field": "seconds"
             }
           ]
         }
       },
-      "id": "dc28b6ff-c670-4df4-b8d7-358d15e3cec0",
+      "id": "bc3acf69-8f7e-49f1-a76a-66bc143ecdee",
       "name": "Cada 5 min",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        0,
-        0
+        1696,
+        192
       ]
     },
     {
@@ -38,26 +38,26 @@
         },
         "options": {}
       },
-      "id": "03998b9f-aa08-4245-9817-4ff08736a8de",
+      "id": "8755cc49-9217-4064-b0a8-c34c7e26dcbe",
       "name": "Llegir Orion",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        224,
-        0
+        1920,
+        192
       ]
     },
     {
       "parameters": {
         "jsCode": "// Aplana la foto d'Orion a files clau-valor per a la taula historic.\n// (Unic tros de codi: convertir cada entitat en una fila per atribut.)\nconst ts = new Date().toISOString().slice(0, 19).replace('T', ' ');\nconst files = [];\n\nfor (const item of $input.all()) {\n  const e = item.json;\n  if (!e || !e.id) continue;\n  if (e.type === 'Event') continue; // el registre d'events no va a l'historic\n\n  for (const [atribut, valor] of Object.entries(e)) {\n    if (atribut === 'id' || atribut === 'type') continue;\n\n    let valor_num = null;\n    let valor_text = null;\n    if (typeof valor === 'number') valor_num = valor;\n    else if (typeof valor === 'boolean') valor_num = valor ? 1 : 0;\n    else if (valor === null || valor === undefined) valor_text = null;\n    else if (typeof valor === 'object') valor_text = JSON.stringify(valor).slice(0, 255);\n    else valor_text = String(valor).slice(0, 255);\n\n    files.push({\n      json: {\n        ts,\n        entitat: e.id,\n        tipus: e.type || null,\n        atribut,\n        valor_num,\n        valor_text,\n      },\n    });\n  }\n}\n\nreturn files;"
       },
-      "id": "13de9f36-1ab4-4d82-a9e6-431587f4d2c3",
+      "id": "bab58514-19d2-4354-8a88-984c5bd8a4bf",
       "name": "Aplanar a files",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        448,
-        0
+        2144,
+        192
       ]
     },
     {
@@ -69,13 +69,13 @@
         },
         "options": {}
       },
-      "id": "95bfb8f3-fa58-47f1-881b-c98282063b4b",
+      "id": "cffdd325-99ae-4423-8913-b11876eb2ed3",
       "name": "Desar a MySQL",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        672,
-        0
+        2368,
+        192
       ],
       "credentials": {
         "mySql": {
@@ -90,13 +90,13 @@
         "query": "SELECT ts, valor_num FROM historic WHERE entitat = 'Bateria:Veinat:001' AND atribut = 'capacitat_actual_kwh' AND ts >= NOW() - INTERVAL 2 HOUR AND valor_num IS NOT NULL ORDER BY ts ASC",
         "options": {}
       },
-      "id": "3f5dfdae-c961-43ba-bb7b-e91e5082e20b",
+      "id": "e0f0aa2f-1e64-44b6-b763-d2cc61098103",
       "name": "Llegir històric bateria",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1120,
-        0
+        2816,
+        192
       ],
       "credentials": {
         "mySql": {
@@ -109,46 +109,44 @@
       "parameters": {
         "jsCode": "// Regressió lineal simple (temps en segons -> capacitat_actual_kwh)\n// per a estimar les hores fins que la bateria arribe a un extrem.\nconst CAPACITAT_MAXIMA_KWH = 62.0;\n\nconst files = $input.all().map(item => item.json);\n\nif (files.length < 3) {\n  return [];\n}\n\nconst t0 = new Date(files[0].ts).getTime();\nconst xs = files.map(f => (new Date(f.ts).getTime() - t0) / 1000);\nconst ys = files.map(f => f.valor_num);\nconst n = xs.length;\n\nconst mitjanaX = xs.reduce((a, b) => a + b, 0) / n;\nconst mitjanaY = ys.reduce((a, b) => a + b, 0) / n;\nconst numerador = xs.reduce((suma, x, i) => suma + (x - mitjanaX) * (ys[i] - mitjanaY), 0);\nconst denominador = xs.reduce((suma, x) => suma + (x - mitjanaX) ** 2, 0);\nconst pendent = denominador === 0 ? 0 : numerador / denominador;\n\n// Pendent 0 (plana, sense tendència): no hi ha res a predir.\nif (pendent === 0) {\n  return [{ json: { valor: null } }];\n}\n\nconst valorActual = ys[ys.length - 1];\n// Descarregant -> hores fins buida (0). Carregant -> hores fins plena.\nconst objectiu = pendent < 0 ? 0 : CAPACITAT_MAXIMA_KWH;\nconst hores = Math.abs((objectiu - valorActual) / pendent) / 3600;\n\nreturn [{ json: { valor: Math.round(hores * 100) / 100 } }];"
       },
-      "id": "86c4fe4e-b11a-4756-bfcd-57f557aac477",
+      "id": "a99a5f42-f863-49a5-b112-b2e1c825c4fd",
       "name": "Calcular predicció",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1344,
-        0
+        3040,
+        192
       ]
     },
     {
       "parameters": {
-        "method": "POST",
+        "method": "PATCH",
         "url": "http://100.97.229.121:1026/v2/entities/Bateria:Veinat:001/attrs",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ { prediccio_bateria: { type: \"Float\", value: $json.valor } } }}",
         "options": {}
       },
-      "id": "2b1ff14b-ad96-483f-bd26-d5c04ff87e8e",
+      "id": "3430d3ac-2cb2-47fc-8f8c-2c01efb81fa5",
       "name": "Enviar a Orion",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1568,
-        0
+        3264,
+        192
       ]
     },
     {
       "parameters": {
-        "resume": "timeInterval",
-        "unit": "seconds",
         "amount": 2
       },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        896,
-        0
+        2592,
+        192
       ],
-      "id": "84f6b6aa-d7ba-4e05-8e42-82d3301d6921",
+      "id": "6d71ab18-5328-41bc-9b3d-2bbbf53eb5c3",
       "name": "Wait",
       "webhookId": "8b70bd07-d553-4bef-8ec0-7322c59d4d59"
     }
@@ -233,12 +231,12 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "7e1346b8-490e-4acc-bfea-85a69c719e9a",
+  "versionId": "259fdabb-ad7d-4222-980b-d79b9ebad4c7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "cfa492ef38f2110b2b99ee1d6840e28ba61ed1e701d87b44025882d0c55b5184"
