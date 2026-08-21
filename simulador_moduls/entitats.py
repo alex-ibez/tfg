@@ -100,7 +100,7 @@ class MotorEntitats:
             valors.update(self._dades_estanca(entitat.valor("estanca")))
 
         if "co2_ppm" in atributs:
-            co2 = random.randint(400, 950)
+            co2 = random.randint(400, 1500)
             valors["co2_ppm"] = co2
             if "actiu" in atributs:
                 valors["actiu"] = co2 > 800 or random.random() < 0.7

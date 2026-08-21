@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 def analizar_datos():
     print("Cargando dataset unificado...")
-    df = pd.read_csv("dataset_veinat_completo.csv")
+    df = pd.read_csv("/home/alex/tfg/db/dataset_veinat_completo1.csv")
     df['fecha'] = pd.to_datetime(df['fecha'])
     df.set_index('fecha', inplace=True)
 

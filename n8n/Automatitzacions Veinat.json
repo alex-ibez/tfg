@@ -11,10 +11,7 @@
       "name": "Orion: llum encesa",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [
-        -1328,
-        0
-      ],
+      "position": [-1552, 0],
       "webhookId": "11111111-1111-4111-8111-111111111111"
     },
     {
@@ -26,52 +23,29 @@
       "name": "Separar llums",
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
-      "position": [
-        -1104,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "unit": "minutes"
-      },
-      "id": "ef680e9c-d057-4b17-b1b3-b4f7a0720a36",
-      "name": "Esperar 5 min",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        -880,
-        0
-      ],
-      "webhookId": "33333333-3333-4333-8333-333333333333"
+      "position": [-1328, 0]
     },
     {
       "parameters": {
         "url": "=http://orion:1026/v2/entities/{{ $json.id }}?options=keyValues",
         "options": {}
       },
-      "id": "32f51414-9e9b-4309-b260-ddcf3f7a2a64",
-      "name": "Rellegir llum",
+      "id": "b1a1c111-1111-4111-8111-111111111101",
+      "name": "Rellegir llum (inicial)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        -656,
-        0
-      ]
+      "position": [-1104, -96]
     },
     {
       "parameters": {
         "url": "=http://orion:1026/v2/entities/SensorAmbient:Veinat:{{ $('Separar llums').item.json.estanca }}?options=keyValues",
         "options": {}
       },
-      "id": "4f8989e1-c660-4cd6-990b-26b78a4c5bb7",
-      "name": "Rellegir sensor",
+      "id": "b1a1c111-1111-4111-8111-111111111102",
+      "name": "Rellegir sensor (inicial)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        -432,
-        0
-      ]
+      "position": [-880, -96]
     },
     {
       "parameters": {
@@ -84,8 +58,8 @@
           },
           "conditions": [
             {
-              "id": "cond-encesa",
-              "leftValue": "={{ $('Rellegir llum').item.json.encesa }}",
+              "id": "cond-encesa-ini",
+              "leftValue": "={{ $('Rellegir llum (inicial)').item.json.encesa }}",
               "rightValue": "",
               "operator": {
                 "type": "boolean",
@@ -94,7 +68,7 @@
               }
             },
             {
-              "id": "cond-buida",
+              "id": "cond-buida-ini",
               "leftValue": "={{ $json.ocupacio }}",
               "rightValue": "",
               "operator": {
@@ -108,19 +82,90 @@
         },
         "options": {}
       },
-      "id": "701f947a-131c-4c77-a451-7f7a26253518",
-      "name": "Encesa i sala buida?",
+      "id": "b1a1c111-1111-4111-8111-111111111103",
+      "name": "Comprovació inicial",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [
-        -208,
-        0
-      ]
+      "position": [-656, -96]
+    },
+    {
+      "parameters": {
+        "unit": "minutes"
+      },
+      "id": "ef680e9c-d057-4b17-b1b3-b4f7a0720a36",
+      "name": "Esperar 5 min",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [-432, -160],
+      "webhookId": "33333333-3333-4333-8333-333333333333"
+    },
+    {
+      "parameters": {
+        "url": "=http://orion:1026/v2/entities/{{ $('Separar llums').item.json.id }}?options=keyValues",
+        "options": {}
+      },
+      "id": "b1a1c111-1111-4111-8111-111111111104",
+      "name": "Rellegir llum (final)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-208, -160]
+    },
+    {
+      "parameters": {
+        "url": "=http://orion:1026/v2/entities/SensorAmbient:Veinat:{{ $('Separar llums').item.json.estanca }}?options=keyValues",
+        "options": {}
+      },
+      "id": "b1a1c111-1111-4111-8111-111111111105",
+      "name": "Rellegir sensor (final)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [16, -160]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-encesa-fin",
+              "leftValue": "={{ $('Rellegir llum (final)').item.json.encesa }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cond-buida-fin",
+              "leftValue": "={{ $json.ocupacio }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b1a1c111-1111-4111-8111-111111111106",
+      "name": "Comprovació final",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [240, -160]
     },
     {
       "parameters": {
         "method": "PATCH",
-        "url": "=http://orion:1026/v2/entities/{{ $('Rellegir llum').item.json.id }}/attrs",
+        "url": "=http://orion:1026/v2/entities/{{ $('Rellegir llum (final)').item.json.id }}/attrs",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ ({ encesa: { type: 'Boolean', value: false } }) }}",
@@ -130,10 +175,7 @@
       "name": "Apagar llum",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        16,
-        0
-      ]
+      "position": [464, -160]
     },
     {
       "parameters": {
@@ -171,10 +213,7 @@
       "name": "Preparar event llum",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [
-        240,
-        0
-      ]
+      "position": [688, -160]
     },
     {
       "parameters": {
@@ -189,10 +228,7 @@
       "name": "Publicar event llum",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        464,
-        0
-      ]
+      "position": [912, -160]
     },
     {
       "parameters": {
@@ -204,10 +240,7 @@
       "name": "Orion: CO2 alt",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [
-        -1328,
-        224
-      ],
+      "position": [-1552, 224],
       "webhookId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
     },
     {
@@ -246,10 +279,7 @@
       "name": "Preparar event CO2",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [
-        -1104,
-        224
-      ]
+      "position": [-1328, 224]
     },
     {
       "parameters": {
@@ -264,123 +294,55 @@
       "name": "Publicar event CO2",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        -880,
-        224
-      ]
+      "position": [-1104, 224]
     }
   ],
   "pinData": {},
   "connections": {
     "Orion: llum encesa": {
-      "main": [
-        [
-          {
-            "node": "Separar llums",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "Separar llums", "type": "main", "index": 0 }]]
     },
     "Separar llums": {
+      "main": [[{ "node": "Rellegir llum (inicial)", "type": "main", "index": 0 }]]
+    },
+    "Rellegir llum (inicial)": {
+      "main": [[{ "node": "Rellegir sensor (inicial)", "type": "main", "index": 0 }]]
+    },
+    "Rellegir sensor (inicial)": {
+      "main": [[{ "node": "Comprovació inicial", "type": "main", "index": 0 }]]
+    },
+    "Comprovació inicial": {
       "main": [
-        [
-          {
-            "node": "Esperar 5 min",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{ "node": "Esperar 5 min", "type": "main", "index": 0 }],
+        []
       ]
     },
     "Esperar 5 min": {
-      "main": [
-        [
-          {
-            "node": "Rellegir llum",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "Rellegir llum (final)", "type": "main", "index": 0 }]]
     },
-    "Rellegir llum": {
-      "main": [
-        [
-          {
-            "node": "Rellegir sensor",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+    "Rellegir llum (final)": {
+      "main": [[{ "node": "Rellegir sensor (final)", "type": "main", "index": 0 }]]
     },
-    "Rellegir sensor": {
-      "main": [
-        [
-          {
-            "node": "Encesa i sala buida?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+    "Rellegir sensor (final)": {
+      "main": [[{ "node": "Comprovació final", "type": "main", "index": 0 }]]
     },
-    "Encesa i sala buida?": {
+    "Comprovació final": {
       "main": [
-        [
-          {
-            "node": "Apagar llum",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{ "node": "Apagar llum", "type": "main", "index": 0 }],
+        []
       ]
     },
     "Apagar llum": {
-      "main": [
-        [
-          {
-            "node": "Preparar event llum",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "Preparar event llum", "type": "main", "index": 0 }]]
     },
     "Preparar event llum": {
-      "main": [
-        [
-          {
-            "node": "Publicar event llum",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "Publicar event llum", "type": "main", "index": 0 }]]
     },
     "Orion: CO2 alt": {
-      "main": [
-        [
-          {
-            "node": "Preparar event CO2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "Preparar event CO2", "type": "main", "index": 0 }]]
     },
     "Preparar event CO2": {
-      "main": [
-        [
-          {
-            "node": "Publicar event CO2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "Publicar event CO2", "type": "main", "index": 0 }]]
     }
   },
   "active": false,
@@ -388,7 +350,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "fd0617e3-6622-45ae-9745-bf6988c145b4",
+  "versionId": "fd0617e3-6622-45ae-9745-bf6988c145b5",
   "meta": {
     "instanceId": "cfa492ef38f2110b2b99ee1d6840e28ba61ed1e701d87b44025882d0c55b5184"
   },

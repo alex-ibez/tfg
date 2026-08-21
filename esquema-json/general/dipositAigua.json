@@ -3,7 +3,7 @@
   "type": "DepositAigua",
   "nivell_litres": {
     "type": "Float",
-    "value": 207.3
+    "value": 207.1
   },
   "volum_max_litres": {
     "type": "Float",
